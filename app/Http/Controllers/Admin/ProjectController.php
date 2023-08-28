@@ -94,6 +94,7 @@ class ProjectController extends Controller
             'url' => ['required'],
             'image' => ['image', 'max:512'],
             'technologies' => ['exists:technologies,id'],
+            'type_id'=>['required'],
             'content' => ['required', 'min:10'],
         ]);
 
