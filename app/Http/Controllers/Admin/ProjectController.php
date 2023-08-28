@@ -109,7 +109,7 @@ class ProjectController extends Controller
         $project->update($data);
 
         if ($request->has('technologies')){
-            $post->technologies()->sync( $request->technologies);
+            $project->technologies()->sync( $request->technologies);
         }
 
         return redirect()->route('admin.projects.show', compact('project'));

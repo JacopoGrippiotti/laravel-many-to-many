@@ -45,6 +45,20 @@
                     <input type="file" name="image" id="image" class="form-control" placeholder="Upload your image" value="{{ old('image', '') }}">
                 </div>
                 
+                <div class="mb-5">
+                   <label for="technologies" class="form-label">
+                      Tags
+                   </label>
+
+                    <div>
+                     @foreach ($technologies as $technology)
+                        <input type="checkbox" name="technologies[]" class="form-check-input" id="tags" value="{{ $technology->id }}" @if ($project->technologies->contains($technology->id) ) checked @endif>
+                        <label for="technologies" class="form-check-label me-3">
+                            {{ $technology->name }}
+                        </label>
+                     @endforeach
+                    </div>
+                </div>
                 @error('content')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
