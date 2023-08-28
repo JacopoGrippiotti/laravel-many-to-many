@@ -9,6 +9,14 @@
                 <a src="{{ $project->url }}" alt="{{ $project->title }}">
                    Project url: {{$project->url}}
                 </a>
+
+                @if ( count($project->technologies) > 0)
+                    <h6 class="card-header">
+                        @foreach ($project->technologies as $technology)
+                            {{ $technology->name }} --
+                        @endforeach
+                    </h6>
+                @endif
                 
                 @if (str_starts_with($project->image, 'http' ))
                     <img src="{{ $project->image }}" alt="{{ $project->title }}">
