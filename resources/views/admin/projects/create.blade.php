@@ -1,0 +1,75 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container" id="projects-container">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <form action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                @error('title')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+                <div class="mb-5">
+                    <label for="exampleFormControlInput1" class="form-label">
+                        Title
+                    </label>
+                    <input type="text" class="form-control" id="title" placeholder="Insert your project's title" name="title" value="{{ old('title', '') }}">
+                </div>
+                
+                @error('image')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+                <div class="mb-5">
+                    <label for="image" class="form-label">
+                        Image
+                    </label>
+                    <input type="file" name="image" id="image" class="form-control" placeholder="Upload your image" value="{{ old('image', '') }}">
+                </div>
+
+                <label for='types' class='form-label'>
+                  type:
+                </label>
+                
+                <select class="form-select mb-5" aria-label="Default select example" name='type_id' id='type_id' >
+                  @foreach ($typeIds as $typeId )
+                    <option value="{{$typeId->id}}">{{$typeId->name}}</option>
+                  @endforeach                  
+                </select>                
+                
+                @error('url')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+                <div class="mb-5">
+                    <label for="url" class="form-label">
+                        Project url
+                    </label>
+                    <input type="text" class="form-control" id="url" placeholder="Upload your link" name="url" >
+                </div>
+                
+                @error('content')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+                <div class="mb-5">
+                    <label for="content" class="form-label">
+                        Content
+                    </label>
+                    <textarea class="form-control" id="content" rows="7" name="content">
+                    {{ old('content', '') }}
+                    </textarea>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="me-3">
+                        Create new project
+                    </button>
+                    <button type="reset">
+                        Reset
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
