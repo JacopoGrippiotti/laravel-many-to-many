@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Technology;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -27,7 +28,8 @@ class ProjectController extends Controller
     public function create()
     {
         $typeIds = Type::all();
-        return view('admin.projects.create', compact('typeIds'));
+        $technologies = Technology::all();
+        return view('admin.projects.create', compact('typeIds','technologies'));
     }
 
     /**
@@ -42,6 +44,7 @@ class ProjectController extends Controller
             'url' => ['required'],
             'image' => ['image'],
             'content' => ['required', 'min:10'],
+            'technologies' => ['exists:technologies,id'],
             'type_id'=>['required']
         ]);
         
@@ -55,6 +58,10 @@ class ProjectController extends Controller
         $newProject = Project::create($data);
         $newProject->slug = Str::of("$newProject->id " . $data['title'])->slug('-');
         $newProject->save();
+
+        if ($request->has('technologies')){
+            $newProject->technologies()->sync( $request->technologies);
+        }
 
         return redirect()->route('admin.projects.show', $newProject);
     }
@@ -72,8 +79,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
+        $technologies = Technology::all();
         $typeIds = Type::all();
-        return view('admin.projects.edit', compact('project'), compact('typeIds'));
+        return view('admin.projects.edit', compact('project','typeIds','technologies'));
     }
 
     /**
@@ -85,6 +93,7 @@ class ProjectController extends Controller
             'title' => ['required', 'min:3', 'max:255', Rule::unique('projects')->ignore($project->id)],
             'url' => ['required'],
             'image' => ['image', 'max:512'],
+            'technologies' => ['exists:technologies,id'],
             'content' => ['required', 'min:10'],
         ]);
 
@@ -97,6 +106,10 @@ class ProjectController extends Controller
         $data['slug'] = Str::of("$project->id " . $data['title'])->slug('-');
 
         $project->update($data);
+
+        if ($request->has('technologies')){
+            $post->technologies()->sync( $request->technologies);
+        }
 
         return redirect()->route('admin.projects.show', compact('project'));
     }
@@ -127,6 +140,7 @@ class ProjectController extends Controller
     {
         $project = Project::onlyTrashed()->findOrFail($slug);
         Storage::delete($project->image);
+        $project->technologies()->detach();
         $project->forceDelete();
         
         return redirect()->route('admin.projects.index');
